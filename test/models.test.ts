@@ -173,3 +173,29 @@ test('upstreamPayload routes codex reasoning effort and friendly aliases', () =>
   const untouched = upstreamPayload(externalPayload, externalModel, activeAliases);
   assert.deepEqual(untouched, externalPayload);
 });
+
+test('upstreamPayload keeps Antigravity model identity across thinking tiers', () => {
+  for (const id of ['agy/claude-sonnet-4-6', 'agy/claude-opus-4-6-thinking']) {
+    for (const effort of ['low', 'medium', 'high', 'none']) {
+      const payload = {
+        model: effort === 'none' ? id : `${id}-${effort}`,
+        reasoning_effort: effort,
+        messages: [{ role: 'user', content: 'Hello' }],
+      };
+      assert.deepEqual(upstreamPayload(payload, { provider: 'omniroute', id }, {}), {
+        ...payload,
+        model: id,
+      });
+    }
+  }
+});
+
+test('upstreamPayload resolves friendly Antigravity aliases after effort routing', () => {
+  const payload = { model: 'agy/gemini-3.8-flash-high', reasoning_effort: 'high' };
+  assert.deepEqual(upstreamPayload(payload, {
+    provider: 'omniroute', id: 'agy/gemini-3.8-flash',
+  }, { 'agy/gemini-3.8-flash': 'agy/gemini-3.8-flash-tiered' }), {
+    ...payload,
+    model: 'agy/gemini-3.8-flash-tiered',
+  });
+});

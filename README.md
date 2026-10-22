@@ -5,7 +5,7 @@ OmniRoute provider plugin and extension for **Oh My Pi (OMP)**. It integrates an
 ## Features
 
 - **Dual API routing:** Uses OpenAI Responses API for `codex/` models and Chat Completions for `agy/` (Antigravity/Gemini) models.
-- **Effort-tier grouping:** Combines advertised effort variants (`-minimal`, `-low`, `-medium`, `-high`, `-xhigh`, `-max`) into a canonical base model, preserving effort routing under OMP's thinking selector.
+- **Effort-tier grouping:** Combines advertised effort variants (`-minimal`, `-low`, `-medium`, `-high`, `-xhigh`, `-max`) into a canonical base model. `codex/` routes to effort-specific IDs; `agy/` sends the selected model's upstream ID with a separate `reasoning_effort`, avoiding synthetic tier IDs rejected by Antigravity's live catalog.
 - **Safe context window calculation:** In groups with differing variant capacities, automatically adopts the minimum advertised context length to prevent prompt overflows.
 - **Resilient catalog cache:** Discovers available models on startup and caches them locally. If the gateway is temporarily offline, OMP boots cleanly using the last filtered catalog snapshot.
 - **Strict configuration & security:** No hardcoded endpoints or credentials. Zero telemetry leaks. Supports custom local LAN Root CAs via standard `NODE_EXTRA_CA_CERTS`.

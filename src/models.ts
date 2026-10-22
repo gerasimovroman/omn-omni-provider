@@ -198,7 +198,10 @@ export function upstreamPayload(
 
   const requestedModel = typeof payloadRecord.model === 'string' ? payloadRecord.model : undefined;
   const alias = requestedModel ? activeAliases[requestedModel] : undefined;
-  const wire = routed || alias;
+  // Antigravity accepts effort separately, not the catalog's synthetic tier IDs.
+  const wire = modelId.startsWith('agy/')
+    ? activeAliases[modelId] || modelId
+    : routed || alias;
 
   if (wire) {
     return {
